@@ -1,0 +1,5 @@
+altair
+altair-viewer
+pandas
+requests
+requests-cache
