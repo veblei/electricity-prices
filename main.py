@@ -1,4 +1,5 @@
 import datetime
+import sys
 import altair as alt
 import pandas as pd
 import requests
@@ -47,7 +48,7 @@ def fetch_day_prices(date: datetime.date = None, location: str = "NO1") -> pd.Da
 
 
 
-def fetch_prices(
+def fetch_all_areas(
     end_date: datetime.date = None,
     days: int = 7,
     locations=tuple(LOCATION_CODES.keys()),
@@ -80,6 +81,38 @@ def fetch_prices(
 
 
 
+def fetch_single_area(
+    end_date: datetime.date = None,
+    days: int = 7,
+    location: str = "NO1",
+) -> pd.DataFrame:
+    """Fetch prices for multiple days for a single location into a single DataFrame
+
+    Arguments:
+        - end_date (datatime.date) : The last date the API will be requested for.
+        - days (int) : How many days leading up to end_Date the API will be requested for.
+        - locations (str) : ....
+
+    Returns:
+        - df (pd.DataFrame) : ...
+    """
+    if end_date is None:
+        end_date = datetime.date.today()
+
+    df_list = []
+    for i in range(days):
+        date = end_date - datetime.timedelta(days=i)
+        temp = fetch_day_prices(date, location)
+        temp["location_code"] = location
+        temp["location"] = LOCATION_CODES[location]
+        df_list.append(temp)
+
+    df = pd.concat(df_list, ignore_index=True)
+
+    return df
+
+
+
 def plot_prices(df: pd.DataFrame) -> alt.Chart:
     """Plot energy prices over time
 
@@ -93,21 +126,22 @@ def plot_prices(df: pd.DataFrame) -> alt.Chart:
     Returns:
         - chart (alt.Chart) : The chart/line plot.
     """
-    # Converts type of time_start to pass tests.
-    df['time_start'] = df['time_start'].astype(str)
     chart = alt.Chart(df).mark_line().encode(
         x="time_start:T",
         y="NOK_per_kWh",
         color="location"
     ).properties(
         title="Electricity prices"
-    )
+    ).interactive()
 
     return chart
 
 
 
 if __name__ == "__main__":
-    df = fetch_prices()
+    if len(sys.argv) == 1:
+        df = fetch_all_areas()
+    else:
+        df = fetch_single_area(location=sys.argv[1])
     chart = plot_prices(df)
     chart.show()
