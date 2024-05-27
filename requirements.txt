@@ -3,3 +3,5 @@ altair-viewer
 pandas
 requests
 requests-cache
+fastapi[all]
+uvicorn
