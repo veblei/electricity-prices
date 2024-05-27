@@ -1,6 +1,6 @@
 # Norway Electricity Prices
 
-Python program that compares the electricity prices (NOK_per_kWh) for the five price areas in Norway over the last week. Utilizes the [Strømpris API](https://www.hvakosterstrommen.no/strompris-api).
+Python program that compares the electricity prices for the different price areas in Norway for a given period. Utilizes the [Strømpris API](https://www.hvakosterstrommen.no/strompris-api).
 
 ## Dependecies
 
