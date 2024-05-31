@@ -3,12 +3,9 @@ from typing import List, Optional
 import altair as alt
 from fastapi import FastAPI, Query, Request
 from fastapi.templating import Jinja2Templates
-from starlette.staticfiles import StaticFiles
 from strompris import (
     LOCATION_CODES,
-    fetch_day_prices,
-    fetch_all_areas,
-    fetch_single_area,
+    fetch_prices,
     plot_prices
 )
 
@@ -37,7 +34,7 @@ def strompris_json(
     end: Optional[datetime.date] = None,
     days: Optional[int] = 7
     ):
-    df = fetch_all_areas(locations=locations, end_date=end, days=days)
+    df = fetch_prices(locations=locations, end_date=end, days=days)
     chart = plot_prices(df)
     return chart.to_dict()
 
