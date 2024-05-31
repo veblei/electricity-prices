@@ -1,5 +1,4 @@
 import datetime
-import sys
 import altair as alt
 import pandas as pd
 import requests
@@ -48,7 +47,7 @@ def fetch_day_prices(date: datetime.date = None, location: str = "NO1") -> pd.Da
 
 
 
-def fetch_all_areas(
+def fetch_prices(
     end_date: datetime.date = None,
     days: int = 7,
     locations=tuple(LOCATION_CODES.keys()),
@@ -74,38 +73,6 @@ def fetch_all_areas(
             temp["location_code"] = locations[j]
             temp["location"] = LOCATION_CODES[locations[j]]
             df_list.append(temp)
-
-    df = pd.concat(df_list, ignore_index=True)
-
-    return df
-
-
-
-def fetch_single_area(
-    end_date: datetime.date = None,
-    days: int = 7,
-    location: str = "NO1",
-) -> pd.DataFrame:
-    """Fetch prices for multiple days for a single location into a single DataFrame
-
-    Arguments:
-        - end_date (datatime.date) : The last date the API will be requested for.
-        - days (int) : How many days leading up to end_Date the API will be requested for.
-        - locations (str) : ....
-
-    Returns:
-        - df (pd.DataFrame) : ...
-    """
-    if end_date is None:
-        end_date = datetime.date.today()
-
-    df_list = []
-    for i in range(days):
-        date = end_date - datetime.timedelta(days=i)
-        temp = fetch_day_prices(date, location)
-        temp["location_code"] = location
-        temp["location"] = LOCATION_CODES[location]
-        df_list.append(temp)
 
     df = pd.concat(df_list, ignore_index=True)
 
